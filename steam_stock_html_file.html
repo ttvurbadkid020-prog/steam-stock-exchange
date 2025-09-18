@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steam Stock Exchange - Virtual Game Trading Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #000000;
+            color: #ffffff;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .logo {
+            width: 36px;
+            height: 36px;
+            background: #ffffff;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 20px;
+            color: #000;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 40px;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 40px;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-weight: 400;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-links a:hover {
+            color: #ffffff;
+        }
+
+        .section {
+            min-height: 100vh;
+            padding: 120px 40px 80px;
+            position: absolute;
+            width: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s ease;
+            pointer-events: none;
+        }
+
+        .section.active {
+            position: relative;
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .hero {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+            padding-top: 60px;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 300;
+            margin-bottom: 24px;
+            letter-spacing: -1px;
+        }
+
+        .hero .subtitle {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 48px;
+            font-weight: 300;
+            line-height: 1.5;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 16px 32px;
+            background: #ffffff;
+            color: #000000;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .cta-button:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateY(-1px);
+        }
+
+        .launch-section {
+            text-align: center;
+            margin-top: 120px;
+            padding: 80px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .launch-section h2 {
+            font-size: 2rem;
+            font-weight: 300;
+            margin-bottom: 16px;
+        }
+
+        .launch-section p {
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 40px;
+        }
+
+        .countdown {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            margin-top: 40px;
+        }
+
+        .countdown-item {
+            text-align: center;
+        }
+
+        .countdown-number {
+            font-size: 3rem;
+            font-weight: 200;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .countdown-label {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1px;
+            margin-top: 80px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .feature-card {
+            background: #000000;
+            padding: 60px 40px;
+            text-align: left;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 16px;
+        }
+
+        .feature-card p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .about-content, .contact-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .about-content h2, .contact-content h2 {
+            font-size: 3rem;
+            font-weight: 300;
+            margin-bottom: 40px;
+            letter-spacing: -1px;
+        }
+
+        .about-content p, .contact-content p {
+            font-size: 16px;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 30px;
+        }
+
+        .team-section {
+            margin: 80px 0;
+            padding-top: 80px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .team-section h3 {
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 60px;
+            text-align: center;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 60px;
+        }
+
+        .team-card {
+            text-align: center;
+            padding: 40px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .team-card:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .team-card h4 {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .team-card .role {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+            font-weight: 400;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .team-card .description {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .contact-links {
+            margin-top: 60px;
+            text-align: center;
+        }
+
+        .contact-links a {
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-size: 14px;
+            margin: 0 20px;
+            transition: all 0.2s ease;
+        }
+
+        .contact-links a:hover {
+            color: #ffffff;
+        }
+
+        .newsletter {
+            margin-top: 60px;
+            padding: 60px 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .newsletter h3 {
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 16px;
+        }
+
+        .newsletter p {
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 30px;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 12px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .newsletter input {
+            flex: 1;
+            padding: 16px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            font-size: 14px;
+        }
+
+        .newsletter input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .newsletter input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .newsletter button {
+            padding: 16px 24px;
+            background: #ffffff;
+            color: #000000;
+            border: none;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .newsletter button:hover {
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .faq-section {
+            margin-top: 80px;
+            padding-top: 80px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .faq-item {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 30px 0;
+        }
+
+        .faq-question {
+            font-size: 1.1rem;
+            font-weight: 400;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-answer {
+            margin-top: 20px;
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.6;
+            display: none;
+        }
+
+        .faq-answer.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                padding: 20px;
+            }
+            
+            .nav-links {
+                gap: 20px;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .countdown {
+                gap: 30px;
+            }
+            
+            .newsletter-form {
+                flex-direction: column;
+            }
+            
+            .section {
+                padding: 100px 20px 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <div class="nav-brand">
+                <div class="logo">S</div>
+                <span>Steam Stock Exchange</span>
+            </div>
+            <ul class="nav-links">
+                <li><a onclick="showSection('home')">Home</a></li>
+                <li><a onclick="showSection('features')">Features</a></li>
+                <li><a onclick="showSection('about')">About</a></li>
+                <li><a onclick="showSection('contact')">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section id="home" class="section active">
+        <div class="container">
+            <div class="hero">
+                <h1>Steam Stock Exchange</h1>
+                <p class="subtitle">Virtual game trading platform where your Steam library becomes an active portfolio. Trade, compete, and master the art of gaming finance.</p>
+                <button class="cta-button" onclick="showSection('features')">View Features</button>
+            </div>
+            
+            <div class="launch-section">
+                <h2>Launching December 2025</h2>
+                <p>The future of gaming meets finance</p>
+                <div class="countdown">
+                    <div class="countdown-item">
+                        <span class="countdown-number" id="days">0</span>
+                        <span class="countdown-label">Days</span>
+                    </div>
+                    <div class="countdown-item">
+                        <span class="countdown-number" id="hours">0</span>
+                        <span class="countdown-label">Hours</span>
+                    </div>
+                    <div class="countdown-item">
+                        <span class="countdown-number" id="minutes">0</span>
+                        <span class="countdown-label">Minutes</span>
+                    </div>
+                    <div class="countdown-item">
+                        <span class="countdown-number" id="seconds">0</span>
+                        <span class="countdown-label">Seconds</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="section">
+        <div class="container">
+            <div class="hero">
+                <h1>Platform Features</h1>
+                <p class="subtitle">Everything you need to master virtual game trading</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>Virtual Trading</h3>
+                    <p>Trade Steam games like stocks with realistic market mechanics. No real money required - pure strategy and skill determine success.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>AI Competition</h3>
+                    <p>Test your trading strategies against sophisticated algorithmic bots and hedge fund mechanics in real-time market conditions.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>Leaderboards</h3>
+                    <p>Compete on weekly rankings with top 10 traders earning gift card rewards. Track your performance and climb the standings.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>Customization</h3>
+                    <p>Unlock profile themes, trading tools, and exclusive badges through our battle pass system. Make your mark on the platform.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>Analytics</h3>
+                    <p>Access detailed market data, portfolio analytics, and trading insights to refine your strategy and maximize returns.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>Steam Integration</h3>
+                    <p>Seamlessly connects with your existing Steam library to transform your game collection into a dynamic trading portfolio.</p>
+                </div>
+            </div>
+
+            <div class="faq-section">
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(0)">
+                        How does virtual trading work?
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Our platform simulates real stock market mechanics using Steam games as tradable assets. You receive virtual currency to buy and sell games based on market trends, community interest, and algorithmic pricing models.
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(1)">
+                        Do I need to own games to trade them?
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        No, you can trade any Steam game regardless of ownership. The platform provides virtual currency and access to the entire Steam catalog for trading purposes.
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(2)">
+                        How are rewards distributed?
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Weekly leaderboard competitions award gift cards to top 10 performers. Additional rewards are available through battle pass progression and special trading challenges.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="section">
+        <div class="container">
+            <div class="about-content">
+                <h2>About</h2>
+                <p>Steam Stock Exchange bridges gaming and finance, creating an entirely new form of interactive entertainment. We transform your Steam library into an active trading portfolio where strategy, market knowledge, and quick decision-making determine success.</p>
+                
+                <p>Our platform offers a risk-free environment to learn trading principles while competing with friends and fellow gamers. Experience the thrill of market dynamics without financial risk, earning real rewards through virtual achievement.</p>
+
+                <div class="team-section">
+                    <h3>Leadership Team</h3>
+                    <div class="team-grid">
+                        <div class="team-card">
+                            <h4>Muhammad</h4>
+                            <p class="role">Chief Executive Officer</p>
+                            <p class="description">Strategic vision and company leadership</p>
+                        </div>
+                        
+                        <div class="team-card">
+                            <h4>Dylyn</h4>
+                            <p class="role">Chief Marketing Officer</p>
+                            <p class="description">Marketing strategy and brand partnerships</p>
+                        </div>
+                        
+                        <div class="team-card">
+                            <h4>Mustafa</h4>
+                            <p class="role">Chief Technology Officer</p>
+                            <p class="description">Platform development and architecture</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="section">
+        <div class="container">
+            <div class="contact-content">
+                <h2>Stay Updated</h2>
+                <p>Join our community and be the first to know about platform updates, beta access, and launch announcements.</p>
+                
+                <div class="newsletter">
+                    <h3>Newsletter</h3>
+                    <p>Get exclusive updates delivered to your inbox</p>
+                    <div class="newsletter-form">
+                        <input type="email" placeholder="Enter your email" id="newsletter-email">
+                        <button onclick="subscribeNewsletter()">Subscribe</button>
+                    </div>
+                </div>
+                
+                <div class="contact-links">
+                    <a href="mailto:Exchangesteamstock@gmail.com">Email</a>
+                    <a href="https://twitter.com/steamstockexc" target="_blank">Twitter</a>
+                    <a href="https://discord.gg/psPsWxNB" target="_blank">Discord</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Navigation system
+        function showSection(sectionName) {
+            const allSections = document.querySelectorAll('.section');
+            allSections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            const targetSection = document.getElementById(sectionName);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+        }
+
+        // FAQ Toggle
+        function toggleFAQ(index) {
+            const faqItems = document.querySelectorAll('.faq-item');
+            const answer = faqItems[index].querySelector('.faq-answer');
+            const question = faqItems[index].querySelector('.faq-question span');
+            
+            if (answer.classList.contains('active')) {
+                answer.classList.remove('active');
+                question.textContent = '+';
+            } else {
+                // Close all other FAQs
+                document.querySelectorAll('.faq-answer').forEach(a => a.classList.remove('active'));
+                document.querySelectorAll('.faq-question span').forEach(q => q.textContent = '+');
+                
+                answer.classList.add('active');
+                question.textContent = '−';
+            }
+        }
+
+        // Newsletter subscription
+        function subscribeNewsletter() {
+            const email = document.getElementById('newsletter-email').value;
+            if (email) {
+                alert('Thank you for subscribing! We\'ll keep you updated on our launch.');
+                document.getElementById('newsletter-email').value = '';
+            } else {
+                alert('Please enter a valid email address.');
+            }
+        }
+
+        // Countdown timer
+        function updateCountdown() {
+            const target = new Date('2025-12-15T00:00:00').getTime();
+            const now = new Date().getTime();
+            const distance = target - now;
+            
+            if (distance > 0) {
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                
+                document.getElementById('days').textContent = days.toString().padStart(2, '0');
+                document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+                document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+                document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+            }
+        }
+
+        // Initialize
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    </script>
+</body>
+</html>
